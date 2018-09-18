@@ -68,6 +68,15 @@ define Package/uboot-2016-ipq40xx_standard
   VARIANT:=ipq40xx_standard
 endef
 
+define Package/uboot-2016-ipq6018
+  SECTION:=boot
+  CATEGORY:=Boot Loaders
+  DEPENDS:=@TARGET_ipq806x||TARGET_ipq
+  TITLE:=U-boot for IPQ6018 based platforms
+  URL:=http://www.denx.de/wiki/U-Boot
+  VARIANT:=ipq6018
+endef
+
 define Package/uboot-2016-ar71xx/common
  define Package/uboot-2016-ar71xx-$(1)
   SECTION:=boot
@@ -142,11 +151,20 @@ define Package/uboot-2016-ipq40xx_standard/install
 	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq40xx_standard-u-boot-2016.img
 endef
 
+define Package/uboot-2016-ipq6018/install
+	$(INSTALL_DIR) $(1)
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq6018-u-boot.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq6018-u-boot-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-ipq6018-u-boot-stripped.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq6018-u-boot.img
+endef
+
 $(eval $(call BuildPackage,uboot-2016-ipq807x))
 $(eval $(call BuildPackage,uboot-2016-ipq40xx))
 $(eval $(call BuildPackage,uboot-2016-ipq40xx_standard))
 $(eval $(call BuildPackage,uboot-2016-ipq806x))
 $(eval $(call BuildPackage,uboot-2016-ipq806x_standard))
+$(eval $(call BuildPackage,uboot-2016-ipq6018))
 $(eval $(call Package/uboot-2016-ar71xx/nor,ap147-8M,qca953x))
 $(eval $(call Package/uboot-2016-ar71xx/nor,ap147-16M,qca953x))
 $(eval $(call Package/uboot-2016-ar71xx/nor,ap135,qca955x))

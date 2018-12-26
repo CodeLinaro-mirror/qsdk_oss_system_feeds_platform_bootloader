@@ -64,8 +64,6 @@ endef
 
 define Package/lk-ipq807x/install
 	$(INSTALL_DIR) $(1)
-	$(CP) $(PKG_BUILD_DIR)/build-ipq807x/appsboot.mbn $(BIN_DIR)/openwrt-$(BUILD_VARIANT)-lkboot.mbn
-	$(STRIP) $(BIN_DIR)/openwrt-$(BUILD_VARIANT)-lkboot.mbn
 	$(CP) $(PKG_BUILD_DIR)/build-ipq807x/lk $(BIN_DIR)/openwrt-$(BUILD_VARIANT)-lkboot.elf
 endef
 

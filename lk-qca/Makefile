@@ -60,6 +60,8 @@ define Package/lk-ipq40xx/install
 	$(CP) $(PKG_BUILD_DIR)/build-ipq40xx/appsboot.mbn $(BIN_DIR)/openwrt-$(BUILD_VARIANT)-lkboot.mbn
 	$(STRIP) $(BIN_DIR)/openwrt-$(BUILD_VARIANT)-lkboot.mbn
 	$(CP) $(PKG_BUILD_DIR)/build-ipq40xx/lk $(BIN_DIR)/openwrt-$(BUILD_VARIANT)-lkboot.elf
+	$(CP) $(PKG_BUILD_DIR)/build-ipq40xx/lk $(BIN_DIR)/openwrt-$(BUILD_VARIANT)-lkboot-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-$(BUILD_VARIANT)-lkboot-stripped.elf
 endef
 
 define Package/lk-ipq807x/install

@@ -50,6 +50,15 @@ define Package/uboot-2016-ipq807x
   VARIANT:=ipq807x
 endef
 
+define Package/uboot-2016-ipq807x_tiny
+  SECTION:=boot
+  CATEGORY:=Boot Loaders
+  DEPENDS:=@TARGET_ipq807x||TARGET_ipq
+  TITLE:=U-boot (tiny) for IPQ807x based platforms
+  URL:=http://www.denx.de/wiki/U-Boot
+  VARIANT:=ipq807x_tiny
+endef
+
 define Package/uboot-2016-ipq40xx
   SECTION:=boot
   CATEGORY:=Boot Loaders
@@ -135,6 +144,14 @@ define Package/uboot-2016-ipq807x/install
 	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq807x-u-boot.img
 endef
 
+define Package/uboot-2016-ipq807x_tiny/install
+	$(INSTALL_DIR) $(1)
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq807x_tiny-u-boot.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq807x_tiny-u-boot-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-ipq807x_tiny-u-boot-stripped.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq807x_tiny-u-boot.img
+endef
+
 define Package/uboot-2016-ipq40xx/install
 	$(INSTALL_DIR) $(1)
 	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq40xx-u-boot-2016.elf
@@ -160,6 +177,7 @@ define Package/uboot-2016-ipq6018/install
 endef
 
 $(eval $(call BuildPackage,uboot-2016-ipq807x))
+$(eval $(call BuildPackage,uboot-2016-ipq807x_tiny))
 $(eval $(call BuildPackage,uboot-2016-ipq40xx))
 $(eval $(call BuildPackage,uboot-2016-ipq40xx_standard))
 $(eval $(call BuildPackage,uboot-2016-ipq806x))

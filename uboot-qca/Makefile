@@ -89,6 +89,15 @@ define Package/uboot-2016-ipq6018
   VARIANT:=ipq6018
 endef
 
+define Package/uboot-2016-ipq6018_tiny
+  SECTION:=boot
+  CATEGORY:=Boot Loaders
+  DEPENDS:=@TARGET_ipq60xx||TARGET_ipq
+  TITLE:=U-boot (tiny) for IPQ6018 based platforms
+  URL:=http://www.denx.de/wiki/U-Boot
+  VARIANT:=ipq6018_tiny
+endef
+
 define Package/uboot-2016-ar71xx/common
  define Package/uboot-2016-ar71xx-$(1)
   SECTION:=boot
@@ -194,6 +203,14 @@ define Package/fwupgrade-tools/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tools/dumpimage $(1)/usr/bin
 endef
 
+define Package/uboot-2016-ipq6018_tiny/install
+	$(INSTALL_DIR) $(1)
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq6018_tiny-u-boot.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq6018_tiny-u-boot-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-ipq6018_tiny-u-boot-stripped.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq6018_tiny-u-boot.img
+endef
+
 $(eval $(call BuildPackage,uboot-2016-ipq807x))
 $(eval $(call BuildPackage,uboot-2016-ipq807x_tiny))
 $(eval $(call BuildPackage,uboot-2016-ipq40xx))
@@ -201,6 +218,7 @@ $(eval $(call BuildPackage,uboot-2016-ipq40xx_standard))
 $(eval $(call BuildPackage,uboot-2016-ipq806x))
 $(eval $(call BuildPackage,uboot-2016-ipq806x_standard))
 $(eval $(call BuildPackage,uboot-2016-ipq6018))
+$(eval $(call BuildPackage,uboot-2016-ipq6018_tiny))
 $(eval $(call BuildPackage,fwupgrade-tools))
 $(eval $(call Package/uboot-2016-ar71xx/nor,ap147-8M,qca953x))
 $(eval $(call Package/uboot-2016-ar71xx/nor,ap147-16M,qca953x))

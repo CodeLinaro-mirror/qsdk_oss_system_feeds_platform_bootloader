@@ -40,6 +40,15 @@ define Package/lk-ipq807x
   VARIANT:=ipq807x
 endef
 
+define Package/lk-ipq6018
+  SECTION:=boot
+  CATEGORY:=Boot Loaders
+  DEPENDS:=@TARGET_ipq60xx||TARGET_ipq
+  TITLE:=lk bootloader for IPQ6018 based platforms
+  URL:=
+  VARIANT:=ipq6018
+endef
+
 define Build/Compile
 	VERSION_CODE='$(VERSION_NICK) $(VERSION_NUMBER)' \
 	REVISION='$(REVISION)' \
@@ -69,6 +78,12 @@ define Package/lk-ipq807x/install
 	$(CP) $(PKG_BUILD_DIR)/build-ipq807x/lk $(BIN_DIR)/openwrt-$(BUILD_VARIANT)-lkboot.elf
 endef
 
+define Package/lk-ipq6018/install
+	$(INSTALL_DIR) $(1)
+	$(CP) $(PKG_BUILD_DIR)/build-ipq6018/lk $(BIN_DIR)/openwrt-$(BUILD_VARIANT)-lkboot.elf
+endef
+
 $(eval $(call BuildPackage,lk-ipq40xx))
 $(eval $(call BuildPackage,lk-ipq806x))
 $(eval $(call BuildPackage,lk-ipq807x))
+$(eval $(call BuildPackage,lk-ipq6018))

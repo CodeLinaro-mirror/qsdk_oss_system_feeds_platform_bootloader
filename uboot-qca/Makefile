@@ -145,6 +145,9 @@ define Package/uboot-2016-ar71xx/nor
  $$(eval $$(call BuildPackage,uboot-2016-ar71xx-$(1)))
 endef
 
+ifneq ($(CONFIG_TARGET_ipq_ipq50xx),)
+MAX_PAGESIZE=-z max-page-size=4096
+endif
 
 define Build/Configure
 	$(MAKE) -C $(PKG_BUILD_DIR) $(CONFIG_NAME)_defconfig
@@ -157,6 +160,7 @@ define Build/Compile
 		TARGETCC=$(TARGET_CC) \
 		KCPPFLAGS="$(KCPPFLAGS)" \
 		HOSTLDFLAGS="$(HOSTLDFLAGS)" \
+		LDFLAGS="$(MAX_PAGESIZE)" \
 		DTC=${LINUX_DIR}/scripts/dtc/dtc \
 		all
 endef

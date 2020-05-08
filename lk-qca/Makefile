@@ -9,7 +9,6 @@ PKG_BRANCH:=master
 PKG_RELEASE:=1
 include $(INCLUDE_DIR)/local-development.mk
 
-PKG_SOURCE_VERSION:=$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 

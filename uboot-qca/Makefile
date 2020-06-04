@@ -130,7 +130,6 @@ endef
 define Package/fwupgrade-tools
   SECTION:=boot
   CATEGORY:=Boot Loaders
-  DEPENDS:=@TARGET_ipq806x||TARGET_ipq
   TITLE:=U-boot images tools (dumpimage, mkimage)
   URL:=http://www.denx.de/wiki/U-Boot
 endef

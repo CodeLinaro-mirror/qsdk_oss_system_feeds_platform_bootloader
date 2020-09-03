@@ -132,6 +132,7 @@ define Package/fwupgrade-tools
   CATEGORY:=Boot Loaders
   TITLE:=U-boot images tools (dumpimage, mkimage)
   URL:=http://www.denx.de/wiki/U-Boot
+  DEPENDS:=+losetup
 endef
 
 define Package/uboot-2016-ar71xx/nor

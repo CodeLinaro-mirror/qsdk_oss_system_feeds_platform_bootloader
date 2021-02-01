@@ -83,7 +83,7 @@ endef
 define Package/uboot-2016-ipq5018
   SECTION:=boot
   CATEGORY:=Boot Loaders
-  DEPENDS:=@TARGET_ipq5018||TARGET_ipq
+  DEPENDS:=@TARGET_ipq50xx||TARGET_ipq
   TITLE:=U-boot for IPQ5018 based platforms
   URL:=http://www.denx.de/wiki/U-Boot
   VARIANT:=ipq5018

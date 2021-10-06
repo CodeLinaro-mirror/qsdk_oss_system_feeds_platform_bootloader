@@ -125,6 +125,15 @@ define Package/uboot-2016-ipq6018_tiny
   VARIANT:=ipq6018_tiny
 endef
 
+define Package/uboot-2016-ipq9574
+  SECTION:=boot
+  CATEGORY:=Boot Loaders
+  DEPENDS:=@TARGET_ipq95xx||TARGET_ipq
+  TITLE:=U-boot for IPQ9574 based platforms
+  URL:=http://www.denx.de/wiki/U-Boot
+  VARIANT:=ipq9574
+endef
+
 define Package/uboot-2016-ar71xx/common
  define Package/uboot-2016-ar71xx-$(1)
   SECTION:=boot
@@ -252,6 +261,14 @@ define Package/uboot-2016-ipq6018/install
 	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq6018-u-boot.img
 endef
 
+define Package/uboot-2016-ipq9574/install
+	$(INSTALL_DIR) $(1)
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq9574-u-boot.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq9574-u-boot-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-ipq9574-u-boot-stripped.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq9574-u-boot.img
+endef
+
 define Package/fwupgrade-tools/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tools/mkimage $(1)/usr/bin
@@ -276,6 +293,7 @@ $(eval $(call BuildPackage,uboot-2016-ipq5018))
 $(eval $(call BuildPackage,uboot-2016-ipq5018_tiny))
 $(eval $(call BuildPackage,uboot-2016-ipq5018_tiny_debug))
 $(eval $(call BuildPackage,uboot-2016-ipq6018))
+$(eval $(call BuildPackage,uboot-2016-ipq9574))
 $(eval $(call BuildPackage,uboot-2016-ipq6018_tiny))
 $(eval $(call BuildPackage,fwupgrade-tools))
 $(eval $(call Package/uboot-2016-ar71xx/nor,ap147-8M,qca953x))

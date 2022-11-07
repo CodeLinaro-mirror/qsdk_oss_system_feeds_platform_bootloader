@@ -107,31 +107,31 @@ define Package/uboot-2016-ipq5018_tiny_debug
   VARIANT:=ipq5018_tiny_debug
 endef
 
-define Package/uboot-2016-devsoc
+define Package/uboot-2016-ipq5332
   SECTION:=boot
   CATEGORY:=Boot Loaders
   DEPENDS:=@TARGET_ipq53xx||TARGET_ipq
   TITLE:=U-boot for IPQ53xx based platforms
   URL:=http://www.denx.de/wiki/U-Boot
-  VARIANT:=devsoc
+  VARIANT:=ipq5332
 endef
 
-define Package/uboot-2016-devsoc_tiny
+define Package/uboot-2016-ipq5332_tiny
   SECTION:=boot
   CATEGORY:=Boot Loaders
   DEPENDS:=@TARGET_ipq53xx
   TITLE:=U-boot for IPQ53xx based platforms
   URL:=http://www.denx.de/wiki/U-Boot
-  VARIANT:=devsoc_tiny
+  VARIANT:=ipq5332_tiny
 endef
 
-define Package/uboot-2016-devsoc_tiny_debug
+define Package/uboot-2016-ipq5332_tiny_debug
   SECTION:=boot
   CATEGORY:=Boot Loaders
   DEPENDS:=@TARGET_ipq53xx
   TITLE:=U-boot for IPQ53xx based platforms
   URL:=http://www.denx.de/wiki/U-Boot
-  VARIANT:=devsoc_tiny_debug
+  VARIANT:=ipq5332_tiny_debug
 endef
 
 define Package/uboot-2016-ipq6018
@@ -280,28 +280,28 @@ define Package/uboot-2016-ipq5018_tiny_debug/install
 	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq5018_tiny_debug-u-boot.img
 endef
 
-define Package/uboot-2016-devsoc/install
+define Package/uboot-2016-ipq5332/install
 	$(INSTALL_DIR) $(1)
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-devsoc-u-boot.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-devsoc-u-boot-stripped.elf
-	$(STRIP) $(BIN_DIR)/openwrt-devsoc-u-boot-stripped.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-devsoc-u-boot.img
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq5332-u-boot.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq5332-u-boot-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-ipq5332-u-boot-stripped.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq5332-u-boot.img
 endef
 
-define Package/uboot-2016-devsoc_tiny/install
+define Package/uboot-2016-ipq5332_tiny/install
 	$(INSTALL_DIR) $(1)
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-devsoc_tiny-u-boot.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-devsoc_tiny-u-boot-stripped.elf
-	$(STRIP) $(BIN_DIR)/openwrt-devsoc_tiny-u-boot-stripped.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-devsoc_tiny-u-boot.img
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq5332_tiny-u-boot.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq5332_tiny-u-boot-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-ipq5332_tiny-u-boot-stripped.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq5332_tiny-u-boot.img
 endef
 
-define Package/uboot-2016-devsoc_tiny_debug/install
+define Package/uboot-2016-ipq5332_tiny_debug/install
 	$(INSTALL_DIR) $(1)
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-devsoc_tiny_debug-u-boot.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-devsoc_tiny_debug-u-boot-stripped.elf
-	$(STRIP) $(BIN_DIR)/openwrt-devsoc_tiny_debug-u-boot-stripped.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-devsoc_tiny_debug-u-boot.img
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq5332_tiny_debug-u-boot.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq5332_tiny_debug-u-boot-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-ipq5332_tiny_debug-u-boot-stripped.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq5332_tiny_debug-u-boot.img
 endef
 
 define Package/uboot-2016-ipq6018/install
@@ -343,9 +343,9 @@ $(eval $(call BuildPackage,uboot-2016-ipq806x_standard))
 $(eval $(call BuildPackage,uboot-2016-ipq5018))
 $(eval $(call BuildPackage,uboot-2016-ipq5018_tiny))
 $(eval $(call BuildPackage,uboot-2016-ipq5018_tiny_debug))
-$(eval $(call BuildPackage,uboot-2016-devsoc))
-$(eval $(call BuildPackage,uboot-2016-devsoc_tiny))
-$(eval $(call BuildPackage,uboot-2016-devsoc_tiny_debug))
+$(eval $(call BuildPackage,uboot-2016-ipq5332))
+$(eval $(call BuildPackage,uboot-2016-ipq5332_tiny))
+$(eval $(call BuildPackage,uboot-2016-ipq5332_tiny_debug))
 $(eval $(call BuildPackage,uboot-2016-ipq6018))
 $(eval $(call BuildPackage,uboot-2016-ipq9574))
 $(eval $(call BuildPackage,uboot-2016-ipq6018_tiny))

@@ -194,8 +194,16 @@ ifneq ($(CONFIG_TARGET_ipq_ipq50xx),)
 MAX_PAGESIZE=-z max-page-size=4096
 endif
 
+ifeq ($(CONFIG_LINUX_6_1),y)
+KCPPFLAGS += \
+	-Wno-error=maybe-uninitialized \
+	-Wno-error=address-of-packed-member \
+	-Wno-error=attributes \
+	-Wno-error=misleading-indentation
+endif
+
 define Build/Configure
-	$(MAKE) -C $(PKG_BUILD_DIR) $(CONFIG_NAME)_defconfig
+	$(MAKE) -C $(PKG_BUILD_DIR) $(CONFIG_NAME)_defconfig CROSS_COMPILE=$(TARGET_CROSS) TARGETCC=$(TARGET_CC)
 endef
 
 define Build/Compile

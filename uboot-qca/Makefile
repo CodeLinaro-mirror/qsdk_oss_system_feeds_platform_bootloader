@@ -199,7 +199,9 @@ KCPPFLAGS += \
 	-Wno-error=maybe-uninitialized \
 	-Wno-error=address-of-packed-member \
 	-Wno-error=attributes \
-	-Wno-error=misleading-indentation
+	-Wno-error=misleading-indentation \
+	-Wno-error=address \
+	-Wno-error=dangling-pointer
 endif
 
 define Build/Configure

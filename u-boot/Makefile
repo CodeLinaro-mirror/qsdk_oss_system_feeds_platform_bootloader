@@ -15,6 +15,10 @@ endif
 
 PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 CONFIG_NAME=$(shell echo $(BUILD_VARIANT) | sed 's/.*-//')
+LOCAL_VARIANT=$(patsubst ipq9574_%,%,\
+	$(patsubst ipq5332_%,%,\
+	$(BUILD_VARIANT) \
+	))
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -58,11 +62,11 @@ define Package/uboot-ipq5332
   $(call Package/uboot-ipq5332/common,$(1),$(2))
 
   define Package/uboot-ipq5332-$(1)/install
-  	$(INSTALL_DIR) $(1) $(BIN_DIR)
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq5332-$(SUBTARGET)-$(1)-u-boot.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq5332-$(SUBTARGET)-$(1)-u-boot-stripped.elf
-	$(STRIP) $(BIN_DIR)/openwrt-ipq5332-$(SUBTARGET)-$(1)-u-boot-stripped.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq5332-$(SUBTARGET)-$(1)-u-boot.img
+	$(INSTALL_DIR) $(BIN_DIR)
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq5332-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq5332-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-ipq5332-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot-stripped.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq5332-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot.img
   endef
 
   $$(eval $$(call BuildPackage,uboot-ipq5332-$(1)))
@@ -83,11 +87,11 @@ define Package/uboot-ipq9574
   $(call Package/uboot-ipq9574/common,$(1),$(2))
 
   define Package/uboot-ipq9574-$(1)/install
-	$(INSTALL_DIR) $(1) $(BIN_DIR)
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq9574-$(SUBTARGET)-$(1)-u-boot.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq9574-$(SUBTARGET)-$(1)-u-boot-stripped.elf
-	$(STRIP) $(BIN_DIR)/openwrt-ipq9574-$(SUBTARGET)-$(1)-u-boot-stripped.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq9574-$(SUBTARGET)-$(1)-u-boot.img
+	$(INSTALL_DIR) $(BIN_DIR)
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq9574-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq9574-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-ipq9574-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot-stripped.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq9574-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot.img
   endef
 
   $$(eval $$(call BuildPackage,uboot-ipq9574-$(1)))

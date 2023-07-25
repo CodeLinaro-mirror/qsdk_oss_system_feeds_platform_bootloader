@@ -15,26 +15,13 @@ endif
 
 PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 CONFIG_NAME=$(shell echo $(BUILD_VARIANT) | sed 's/.*-//')
+LOCAL_VARIANT=$(patsubst ipq9574_%,%,\
+	$(patsubst ipq5332_%,%,\
+	$(BUILD_VARIANT) \
+	))
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/uboot-ipq5332
-  SECTION:=boot
-  CATEGORY:=Boot Loaders
-  DEPENDS:=@TARGET_ipq53xx
-  TITLE:=U-boot for IPQ53xx based platforms
-  URL:=http://www.denx.de/wiki/U-Boot
-  VARIANT:=ipq5332_mmc
-endef
-
-define Package/uboot-ipq9574
-  SECTION:=boot
-  CATEGORY:=Boot Loaders
-  DEPENDS:=@TARGET_ipq95xx
-  TITLE:=U-boot for IPQ9574 based platforms
-  URL:=http://www.denx.de/wiki/U-Boot
-  VARIANT:=ipq9574_mmc
-endef
 
 ifeq ($(CONFIG_LINUX_6_1),y)
 KCPPFLAGS += \
@@ -51,7 +38,7 @@ endef
 define Build/Compile
 	VERSION_CODE='$(VERSION_NICK) $(VERSION_NUMBER)' \
 	REVISION='$(REVISION)' \
-	$(MAKE) -C $(PKG_BUILD_DIR) HOSTSTRIP=true CROSS_COMPILE=$(TARGET_CROSS) \
+	KBUILD_VERBOSE=1 $(MAKE) -C $(PKG_BUILD_DIR) HOSTSTRIP=true CROSS_COMPILE=$(TARGET_CROSS) \
 		TARGETCC=$(TARGET_CC) \
 		KCPPFLAGS="$(KCPPFLAGS)" \
 		HOSTLDFLAGS="$(HOST_LDFLAGS) -pthread" \
@@ -60,21 +47,76 @@ define Build/Compile
 		all
 endef
 
-define Package/uboot-ipq5332/install
-	$(INSTALL_DIR) $(1) $(BIN_DIR)
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq5332-u-boot.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq5332-u-boot-stripped.elf
-	$(STRIP) $(BIN_DIR)/openwrt-ipq5332-u-boot-stripped.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq5332-u-boot.img
+OBJCOPY:=$(TARGET_CROSS)objcopy
+
+define Package/uboot-ipq5332/common
+  define Package/uboot-ipq5332-$(1)
+    SECTION:=boot
+    CATEGORY:=Boot Loaders
+    DEPENDS:=@TARGET_ipq53xx
+    TITLE:=U-boot for IPQ5322 $(1)
+    URL:=http://www.denx.de/wiki/U-Boot
+    VARIANT:=ipq5332_$(1)
+  endef
 endef
 
-define Package/uboot-ipq9574/install
-	$(INSTALL_DIR) $(1) $(BIN_DIR)
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq9574-u-boot.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq9574-u-boot-stripped.elf
-	$(STRIP) $(BIN_DIR)/openwrt-ipq9574-u-boot-stripped.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq9574-u-boot.img
+define Package/uboot-ipq5332
+  $(call Package/uboot-ipq5332/common,$(1),$(2))
+
+  define Package/uboot-ipq5332-$(1)/install
+	$(INSTALL_DIR) $(BIN_DIR)
+	$(OBJCOPY) $(PKG_BUILD_DIR)/u-boot $(PKG_BUILD_DIR)/u-boot-dtb
+	$(OBJCOPY) $(PKG_BUILD_DIR)/u-boot-dtb --set-section-flags .dtb=CONTENTS,ALLOC,DATA --update-section .dtb=$(PKG_BUILD_DIR)/fit-dtb.blob
+	$(CP) $(PKG_BUILD_DIR)/u-boot-dtb $(BIN_DIR)/openwrt-ipq5332-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot-dtb $(BIN_DIR)/openwrt-ipq5332-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-ipq5332-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot-stripped.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq5332-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot.img
+  endef
+
+  $$(eval $$(call BuildPackage,uboot-ipq5332-$(1)))
 endef
 
-$(eval $(call BuildPackage,uboot-ipq5332))
-$(eval $(call BuildPackage,uboot-ipq9574))
+define Package/uboot-ipq9574/common
+  define Package/uboot-ipq9574-$(1)
+    SECTION:=boot
+    CATEGORY:=Boot Loaders
+    DEPENDS:=@TARGET_ipq95xx
+    TITLE:=U-boot for IPQ9574 $(1)
+    URL:=http://www.denx.de/wiki/U-Boot
+    VARIANT:=ipq9574_$(1)
+  endef
+endef
+
+define Package/uboot-ipq9574
+  $(call Package/uboot-ipq9574/common,$(1),$(2))
+
+  define Package/uboot-ipq9574-$(1)/install
+	$(INSTALL_DIR) $(BIN_DIR)
+	$(OBJCOPY) $(PKG_BUILD_DIR)/u-boot $(PKG_BUILD_DIR)/u-boot-dtb
+	$(OBJCOPY) $(PKG_BUILD_DIR)/u-boot-dtb --set-section-flags .dtb=CONTENTS,ALLOC,DATA --update-section .dtb=$(PKG_BUILD_DIR)/fit-dtb.blob
+	$(CP) $(PKG_BUILD_DIR)/u-boot-dtb $(BIN_DIR)/openwrt-ipq9574-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot-dtb $(BIN_DIR)/openwrt-ipq9574-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-ipq9574-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot-stripped.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq9574-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot.img
+  endef
+
+  $$(eval $$(call BuildPackage,uboot-ipq9574-$(1)))
+endef
+
+$(eval $(call Package/uboot-ipq5332,mmc))
+$(eval $(call Package/uboot-ipq5332,mmc32))
+$(eval $(call Package/uboot-ipq5332,nand))
+$(eval $(call Package/uboot-ipq5332,nand32))
+$(eval $(call Package/uboot-ipq5332,norplusnand))
+$(eval $(call Package/uboot-ipq5332,norplusnand32))
+$(eval $(call Package/uboot-ipq5332,norplusmmc))
+$(eval $(call Package/uboot-ipq5332,norplusmmc32))
+
+$(eval $(call Package/uboot-ipq9574,mmc))
+$(eval $(call Package/uboot-ipq9574,mmc32))
+$(eval $(call Package/uboot-ipq9574,nand))
+$(eval $(call Package/uboot-ipq9574,nand32))
+$(eval $(call Package/uboot-ipq9574,norplusnand))
+$(eval $(call Package/uboot-ipq9574,norplusnand32))
+$(eval $(call Package/uboot-ipq9574,norplusmmc))
+$(eval $(call Package/uboot-ipq9574,norplusmmc32))

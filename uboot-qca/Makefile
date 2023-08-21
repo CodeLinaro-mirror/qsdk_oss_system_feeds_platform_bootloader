@@ -125,6 +125,15 @@ define Package/uboot-2016-ipq5332_tiny
   VARIANT:=ipq5332_tiny
 endef
 
+define Package/uboot-2016-ipq5332_tiny_nor
+  SECTION:=boot
+  CATEGORY:=Boot Loaders
+  DEPENDS:=@TARGET_ipq53xx
+  TITLE:=U-boot for IPQ53xx based platforms
+  URL:=http://www.denx.de/wiki/U-Boot
+  VARIANT:=ipq5332_tiny_nor
+endef
+
 define Package/uboot-2016-ipq5332_tiny_debug
   SECTION:=boot
   CATEGORY:=Boot Loaders
@@ -312,6 +321,14 @@ define Package/uboot-2016-ipq5332_tiny/install
 	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq5332_tiny-u-boot.img
 endef
 
+define Package/uboot-2016-ipq5332_tiny_nor/install
+	$(INSTALL_DIR) $(1)
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq5332_tiny_nor-u-boot.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq5332_tiny_nor-u-boot-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-ipq5332_tiny_nor-u-boot-stripped.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-ipq5332_tiny_nor-u-boot.img
+endef
+
 define Package/uboot-2016-ipq5332_tiny_debug/install
 	$(INSTALL_DIR) $(1)
 	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-ipq5332_tiny_debug-u-boot.elf
@@ -361,6 +378,7 @@ $(eval $(call BuildPackage,uboot-2016-ipq5018_tiny))
 $(eval $(call BuildPackage,uboot-2016-ipq5018_tiny_debug))
 $(eval $(call BuildPackage,uboot-2016-ipq5332))
 $(eval $(call BuildPackage,uboot-2016-ipq5332_tiny))
+$(eval $(call BuildPackage,uboot-2016-ipq5332_tiny_nor))
 $(eval $(call BuildPackage,uboot-2016-ipq5332_tiny_debug))
 $(eval $(call BuildPackage,uboot-2016-ipq6018))
 $(eval $(call BuildPackage,uboot-2016-ipq9574))

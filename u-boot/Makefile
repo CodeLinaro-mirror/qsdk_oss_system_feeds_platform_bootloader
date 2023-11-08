@@ -17,8 +17,9 @@ PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PK
 CONFIG_NAME=$(shell echo $(BUILD_VARIANT) | sed 's/.*-//')
 LOCAL_VARIANT=$(patsubst ipq9574_%,%,\
 	$(patsubst ipq5332_%,%,\
+	$(patsubst devsoc_%,%,\
 	$(BUILD_VARIANT) \
-	))
+	)))
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -103,6 +104,34 @@ define Package/uboot-ipq9574
   $$(eval $$(call BuildPackage,uboot-ipq9574-$(1)))
 endef
 
+define Package/uboot-devsoc/common
+  define Package/uboot-devsoc-$(1)
+    SECTION:=boot
+    CATEGORY:=Boot Loaders
+    DEPENDS:=@TARGET_ipq54xx
+    TITLE:=U-boot for DEVSOC $(1)
+    URL:=http://www.denx.de/wiki/U-Boot
+    VARIANT:=devsoc_$(1)
+  endef
+endef
+
+define Package/uboot-devsoc
+  $(call Package/uboot-devsoc/common,$(1),$(2))
+
+  define Package/uboot-devsoc-$(1)/install
+	$(INSTALL_DIR) $(BIN_DIR)
+	$(OBJCOPY) $(PKG_BUILD_DIR)/u-boot $(PKG_BUILD_DIR)/u-boot-dtb
+	$(OBJCOPY) $(PKG_BUILD_DIR)/u-boot-dtb --set-section-flags .dtb=CONTENTS,ALLOC,DATA --update-section .dtb=$(PKG_BUILD_DIR)/fit-dtb.blob
+	$(CP) $(PKG_BUILD_DIR)/u-boot-dtb $(BIN_DIR)/openwrt-devsoc-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot-dtb $(BIN_DIR)/openwrt-devsoc-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-devsoc-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot-stripped.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-devsoc-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot.img
+  endef
+
+  $$(eval $$(call BuildPackage,uboot-devsoc-$(1)))
+endef
+
+
 $(eval $(call Package/uboot-ipq5332,mmc))
 $(eval $(call Package/uboot-ipq5332,mmc32))
 $(eval $(call Package/uboot-ipq5332,nand))
@@ -120,3 +149,12 @@ $(eval $(call Package/uboot-ipq9574,norplusnand))
 $(eval $(call Package/uboot-ipq9574,norplusnand32))
 $(eval $(call Package/uboot-ipq9574,norplusmmc))
 $(eval $(call Package/uboot-ipq9574,norplusmmc32))
+
+$(eval $(call Package/uboot-devsoc,mmc))
+$(eval $(call Package/uboot-devsoc,mmc32))
+$(eval $(call Package/uboot-devsoc,nand))
+$(eval $(call Package/uboot-devsoc,nand32))
+$(eval $(call Package/uboot-devsoc,norplusnand))
+$(eval $(call Package/uboot-devsoc,norplusnand32))
+$(eval $(call Package/uboot-devsoc,norplusmmc))
+$(eval $(call Package/uboot-devsoc,norplusmmc32))

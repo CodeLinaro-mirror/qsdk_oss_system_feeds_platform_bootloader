@@ -67,7 +67,7 @@ define Package/uboot-ipq5332
   define Package/uboot-ipq5332-$(1)/install
 	$(INSTALL_DIR) $(BIN_DIR)
 	$(OBJCOPY) $(PKG_BUILD_DIR)/u-boot $(PKG_BUILD_DIR)/u-boot-dtb
-	$(OBJCOPY) $(PKG_BUILD_DIR)/u-boot-dtb --set-section-flags .dtb=CONTENTS,ALLOC,DATA --update-section .dtb=$(PKG_BUILD_DIR)/fit-dtb.blob
+	$(OBJCOPY) $(PKG_BUILD_DIR)/u-boot-dtb --set-section-flags .dtb=CONTENTS,ALLOC,DATA --update-section .dtb=$(PKG_BUILD_DIR)/fit-dtb.blob.lzo
 	$(CP) $(PKG_BUILD_DIR)/u-boot-dtb $(BIN_DIR)/openwrt-ipq5332-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot.elf
 	$(CP) $(PKG_BUILD_DIR)/u-boot-dtb $(BIN_DIR)/openwrt-ipq5332-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot-stripped.elf
 	$(STRIP) $(BIN_DIR)/openwrt-ipq5332-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot-stripped.elf
@@ -94,7 +94,7 @@ define Package/uboot-ipq9574
   define Package/uboot-ipq9574-$(1)/install
 	$(INSTALL_DIR) $(BIN_DIR)
 	$(OBJCOPY) $(PKG_BUILD_DIR)/u-boot $(PKG_BUILD_DIR)/u-boot-dtb
-	$(OBJCOPY) $(PKG_BUILD_DIR)/u-boot-dtb --set-section-flags .dtb=CONTENTS,ALLOC,DATA --update-section .dtb=$(PKG_BUILD_DIR)/fit-dtb.blob
+	$(OBJCOPY) $(PKG_BUILD_DIR)/u-boot-dtb --set-section-flags .dtb=CONTENTS,ALLOC,DATA --update-section .dtb=$(PKG_BUILD_DIR)/fit-dtb.blob.lzo
 	$(CP) $(PKG_BUILD_DIR)/u-boot-dtb $(BIN_DIR)/openwrt-ipq9574-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot.elf
 	$(CP) $(PKG_BUILD_DIR)/u-boot-dtb $(BIN_DIR)/openwrt-ipq9574-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot-stripped.elf
 	$(STRIP) $(BIN_DIR)/openwrt-ipq9574-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot-stripped.elf
@@ -121,7 +121,7 @@ define Package/uboot-devsoc
   define Package/uboot-devsoc-$(1)/install
 	$(INSTALL_DIR) $(BIN_DIR)
 	$(OBJCOPY) $(PKG_BUILD_DIR)/u-boot $(PKG_BUILD_DIR)/u-boot-dtb
-	$(OBJCOPY) $(PKG_BUILD_DIR)/u-boot-dtb --set-section-flags .dtb=CONTENTS,ALLOC,DATA --update-section .dtb=$(PKG_BUILD_DIR)/fit-dtb.blob
+	$(OBJCOPY) $(PKG_BUILD_DIR)/u-boot-dtb --set-section-flags .dtb=CONTENTS,ALLOC,DATA --update-section .dtb=$(PKG_BUILD_DIR)/fit-dtb.blob.lzo
 	$(CP) $(PKG_BUILD_DIR)/u-boot-dtb $(BIN_DIR)/openwrt-devsoc-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot.elf
 	$(CP) $(PKG_BUILD_DIR)/u-boot-dtb $(BIN_DIR)/openwrt-devsoc-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot-stripped.elf
 	$(STRIP) $(BIN_DIR)/openwrt-devsoc-$(SUBTARGET)-$(LOCAL_VARIANT)-u-boot-stripped.elf

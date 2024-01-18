@@ -203,7 +203,7 @@ ifneq ($(CONFIG_TARGET_ipq_ipq50xx),)
 MAX_PAGESIZE=-z max-page-size=4096
 endif
 
-ifeq ($(CONFIG_LINUX_6_1),y)
+ifeq ($(CONFIG_LINUX_6_1)$(CONFIG_LINUX_6_6),y)
 KCPPFLAGS += \
 	-Wno-error=maybe-uninitialized \
 	-Wno-error=address-of-packed-member \

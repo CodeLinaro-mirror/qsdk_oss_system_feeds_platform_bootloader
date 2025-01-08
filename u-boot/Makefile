@@ -48,6 +48,7 @@ define Build/Compile
 	KBUILD_VERBOSE=1 $(MAKE) -C $(PKG_BUILD_DIR) HOSTSTRIP=true CROSS_COMPILE=$(TARGET_CROSS) \
 		TARGETCC=$(TARGET_CC) \
 		KCPPFLAGS="$(KCPPFLAGS)" \
+		KCFLAGS=-Werror \
 		HOSTLDFLAGS="$(HOST_LDFLAGS) -pthread -Werror" \
 		HOSTCFLAGS="$(HOST_CFLAGS)" \
 		DTC=${LINUX_DIR}/scripts/dtc/dtc \

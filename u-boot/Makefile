@@ -22,6 +22,20 @@ LOCAL_VARIANT=$(patsubst ipq9574_%,%,\
 	$(BUILD_VARIANT) \
 	)))
 
+VERSION_FILE := $(TOPDIR)/version
+ifneq ($(wildcard $(VERSION_FILE)),)
+  NHSS_VERSION := $(shell grep 'NHSS\.QSDK' $(VERSION_FILE) | cut -d'-' -f2)
+  $(shell sed -i 's/^SUBLEVEL.*/SUBLEVEL =$(NHSS_VERSION)/' $(TOPDIR)/qca/src/u-boot/Makefile)
+
+  $(shell if [ -n "$(NHSS_VERSION)" ]; then \
+	sed -i 's/\.\$$(SUBLEVEL)/-\$$(SUBLEVEL)/' $(TOPDIR)/qca/src/u-boot/Makefile; \
+  else\
+	sed -i 's/\-\$$(SUBLEVEL)/.\$$(SUBLEVEL)/' $(TOPDIR)/qca/src/u-boot/Makefile; \
+  fi)
+else
+  $(warning Version file $(VERSION_FILE) not found, skipping version update)
+endif
+
 include $(INCLUDE_DIR)/package.mk
 
 

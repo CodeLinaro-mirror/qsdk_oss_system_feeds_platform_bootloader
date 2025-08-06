@@ -29,14 +29,16 @@ TEXT_BASE=$(shell grep "CONFIG_TEXT_BASE" $(SRC_DIR)/configs/$(CONFIG_NAME)_defc
 TEXT_SIZE=$(shell grep "CONFIG_TEXT_SIZE" $(SRC_DIR)/configs/$(CONFIG_NAME)_defconfig | cut -c 18-)
 
 VERSION_FILE := $(TOPDIR)/version
-NHSS_VERSION := $(shell grep 'NHSS\.QSDK' $(VERSION_FILE) | cut -d'-' -f2)
-$(shell sed -i 's/^SUBLEVEL.*/SUBLEVEL =$(NHSS_VERSION)/' $(SRC_DIR)/Makefile)
-
-$(shell if [ -n "$(NHSS_VERSION)" ]; then \
-	sed -i 's/\.\$$(SUBLEVEL)/-\$$(SUBLEVEL)/' $(SRC_DIR)/Makefile; \
-else\
-	sed -i 's/\-\$$(SUBLEVEL)/.\$$(SUBLEVEL)/' $(SRC_DIR)/Makefile; \
-fi)
+ifneq ($(wildcard $(VERSION_FILE)),)
+	NHSS_VERSION := $(shell awk -F. 'NF == 4 { \
+		if (length($$2) > 1) \
+			print $$1 "." substr($$2, 1, 1) "." substr($$2, 2) "-" $$4; \
+		else \
+			print $$1 "." $$2 "-" $$4; \
+	}' $(VERSION_FILE))
+else
+  $(warning Version file $(VERSION_FILE) not found, skipping version update)
+endif
 
 ifeq ($(SUBTARGET), generic)
     ARCH:=elf64-littleaarch64
@@ -75,6 +77,13 @@ define Build/Configure/debug
 	echo "CONFIG_SKIP_RESET=y" >> $(PKG_BUILD_DIR)/configs/$(CONFIG_NAME)_defconfig;
 endef
 
+define Update/version
+	if [ "$(NHSS_VERSION)" != "" ]; then \
+		sed -i '/^SUBLEVEL =/s/.*/SUBLEVEL = '"$(NHSS_VERSION)"'/' $(PKG_BUILD_DIR)/Makefile; \
+		sed -i 's/\.\$$$$(SUBLEVEL)/-\$$$$(SUBLEVEL)/g' $(PKG_BUILD_DIR)/Makefile; \
+	fi
+endef
+
 define Packing/elf
 	$(INSTALL_DIR) $(BIN_DIR)
 	@echo "$(LD_SCRIPT)" > $(PKG_BUILD_DIR)/$(LD_SCRIPT_NAME)
@@ -90,6 +99,7 @@ endef
 
 define Build/Configure
 	$(call Build/Configure/$(DEBUG_NAME))
+	$(call Update/version)
 	$(MAKE) -C $(PKG_BUILD_DIR) $(CONFIG_NAME)_defconfig CROSS_COMPILE=$(TARGET_CROSS) TARGETCC=$(TARGET_CC);
 endef
 

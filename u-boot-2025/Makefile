@@ -76,7 +76,7 @@ define Build/Configure/debug
 endef
 
 define Packing/elf
-	$(INSTALL_DIR) $(BIN_DIR) $(TEXT_BASE) $(TEXT_SIZE)
+	$(INSTALL_DIR) $(BIN_DIR)
 	@echo "$(LD_SCRIPT)" > $(PKG_BUILD_DIR)/$(LD_SCRIPT_NAME)
 	$(OBJCOPY) -I binary -O $(ARCH) --change-addresses $(TEXT_BASE) --set-start $(TEXT_BASE) $(PKG_BUILD_DIR)/u-boot.bin $(PKG_BUILD_DIR)/u-boot.o
 	mkdir -p $(BIN_DIR)$(BINARY_PATH)

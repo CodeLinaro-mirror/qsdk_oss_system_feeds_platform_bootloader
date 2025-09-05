@@ -21,8 +21,9 @@ SRC_DIR:=$(TOPDIR)/qca/src/$(PKG_NAME)
 LOCAL_VARIANT=$(patsubst ipq9574_%,%,\
 	$(patsubst ipq5332_%,%,\
 	$(patsubst ipq5424_%,%,\
+	$(patsubst ipq5200_%,%,\
 	$(BUILD_VARIANT) \
-	)))
+	))))
 TARGET_64BIT:=generic
 $(shell cp -fpR -u $(TOPDIR)/qca/feeds/bootloader/files/* $(SRC_DIR))
 TEXT_BASE=$(shell grep "CONFIG_TEXT_BASE" $(SRC_DIR)/configs/$(CONFIG_NAME)_defconfig | cut -c 18-)
@@ -245,6 +246,27 @@ define Package/uboot-2025-ipq5424
   $$(eval $$(call BuildPackage,uboot-2025-ipq5424-$(1)))
 endef
 
+define Package/uboot-2025-ipq5200/common
+  define Package/uboot-2025-ipq5200-$(1)
+    SECTION:=boot
+    CATEGORY:=Boot Loaders
+    DEPENDS:=@TARGET_ipq52xx
+    TITLE:=U-boot for IPQ5200 $(1)
+    URL:=http://www.denx.de/wiki/U-Boot
+    VARIANT:=ipq5200_$(1)
+  endef
+endef
+
+define Package/uboot-2025-ipq5200
+  $(call Package/uboot-2025-ipq5200/common,$(1),$(2))
+
+  define Package/uboot-2025-ipq5200-$(1)/install
+	$(call Packing/elf,ipq5200,$(LOCAL_VARIANT))
+  endef
+
+  $$(eval $$(call BuildPackage,uboot-2025-ipq5200-$(1)))
+endef
+
 $(eval $(call Package/uboot-2025-ipq5332,mmc))
 $(eval $(call Package/uboot-2025-ipq5332,mmc32))
 $(eval $(call Package/uboot-2025-ipq5332,nand))
@@ -313,3 +335,12 @@ $(eval $(call Package/uboot-2025-ipq5424-debug,norplusmmc))
 $(eval $(call Package/uboot-2025-ipq5424-debug,norplusmmc32))
 $(eval $(call Package/uboot-2025-ipq5424-debug,tiny_nand32))
 $(eval $(call Package/uboot-2025-ipq5424-debug,tiny_norplusnand32))
+
+$(eval $(call Package/uboot-2025-ipq5200,mmc))
+$(eval $(call Package/uboot-2025-ipq5200,mmc32))
+$(eval $(call Package/uboot-2025-ipq5200,nand))
+$(eval $(call Package/uboot-2025-ipq5200,nand32))
+$(eval $(call Package/uboot-2025-ipq5200,norplusnand))
+$(eval $(call Package/uboot-2025-ipq5200,norplusnand32))
+$(eval $(call Package/uboot-2025-ipq5200,norplusmmc))
+$(eval $(call Package/uboot-2025-ipq5200,norplusmmc32))

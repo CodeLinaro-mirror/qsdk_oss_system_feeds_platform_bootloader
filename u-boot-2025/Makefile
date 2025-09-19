@@ -3,7 +3,6 @@ include $(INCLUDE_DIR)/kernel.mk
 include $(INCLUDE_DIR)/version.mk
 
 PKG_NAME:=u-boot-2025
-BINARY_PATH:=/u-boot-2025
 PKG_SOURCE_PROTO:=git
 PKG_BRANCH:=master
 PKG_RELEASE:=1
@@ -89,12 +88,11 @@ define Packing/elf
 	$(INSTALL_DIR) $(BIN_DIR)
 	@echo "$(LD_SCRIPT)" > $(PKG_BUILD_DIR)/$(LD_SCRIPT_NAME)
 	$(OBJCOPY) -I binary -O $(ARCH) --change-addresses $(TEXT_BASE) --set-start $(TEXT_BASE) $(PKG_BUILD_DIR)/u-boot.bin $(PKG_BUILD_DIR)/u-boot.o
-	mkdir -p $(BIN_DIR)$(BINARY_PATH)
-	$(LD) $(PKG_BUILD_DIR)/u-boot.o -T $(PKG_BUILD_DIR)/$(LD_SCRIPT_NAME)  -o $(BIN_DIR)$(BINARY_PATH)/openwrt-$(1)-$(SUBTARGET)-$(2)-u-boot.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)$(BINARY_PATH)/openwrt-$(1)-$(SUBTARGET)-$(2)-u-boot-unstripped.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)$(BINARY_PATH)/openwrt-$(1)-$(SUBTARGET)-$(2)-u-boot-stripped.elf
-	$(STRIP) $(BIN_DIR)$(BINARY_PATH)/openwrt-$(1)-$(SUBTARGET)-$(2)-u-boot-stripped.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)$(BINARY_PATH)/openwrt-$(1)-$(SUBTARGET)-$(2)-u-boot.img
+	$(LD) $(PKG_BUILD_DIR)/u-boot.o -T $(PKG_BUILD_DIR)/$(LD_SCRIPT_NAME)  -o $(BIN_DIR)/openwrt-$(1)-$(SUBTARGET)-$(2)-u-boot.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-$(1)-$(SUBTARGET)-$(2)-u-boot-unstripped.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-$(1)-$(SUBTARGET)-$(2)-u-boot-stripped.elf
+	$(STRIP) $(BIN_DIR)/openwrt-$(1)-$(SUBTARGET)-$(2)-u-boot-stripped.elf
+	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-$(1)-$(SUBTARGET)-$(2)-u-boot.img
 endef
 
 

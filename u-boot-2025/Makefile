@@ -24,7 +24,14 @@ LOCAL_VARIANT=$(patsubst ipq9574_%,%,\
 	$(BUILD_VARIANT) \
 	))))
 TARGET_64BIT:=generic
-$(shell cp -fpR -u $(TOPDIR)/qca/feeds/bootloader/files/* $(SRC_DIR))
+
+ifeq ($(CONFIG_USE_PRPLMESH_WHM),y)
+	BOOTLOADER_SRC := $(TOPDIR)/feed-qca/qca/feeds/bootloader/files/*
+else
+	BOOTLOADER_SRC := $(TOPDIR)/qca/feeds/bootloader/files/*
+endif
+
+$(shell cp -fpR -u $(BOOTLOADER_SRC) $(SRC_DIR))
 TEXT_BASE=$(shell grep "CONFIG_TEXT_BASE" $(SRC_DIR)/configs/$(CONFIG_NAME)_defconfig | cut -c 18-)
 TEXT_SIZE=$(shell grep "CONFIG_TEXT_SIZE" $(SRC_DIR)/configs/$(CONFIG_NAME)_defconfig | cut -c 18-)
 

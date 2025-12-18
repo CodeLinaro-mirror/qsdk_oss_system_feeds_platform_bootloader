@@ -52,22 +52,6 @@ ifeq ($(SUBTARGET), generic)
 else
     ARCH:=elf32-littlearm
 endif
-LD_SCRIPT_NAME:=u-boot-$(SUBTARGET)-custom.ld
-
-LD_SCRIPT:= 								\
-MEMORY {								\
-	DDR (rxw) : ORIGIN = $(TEXT_BASE), LENGTH = $(TEXT_SIZE)	\
-}									\
-PHDRS {									\
-	data PT_LOAD FLAGS(5);  /* RX: Read and Execute */		\
-}									\
-ENTRY(_entry)								\
-SECTIONS {								\
-	. = $(TEXT_BASE);						\
-	_entry = . ;							\
-	.data : { *(.data) . = ALIGN(4);} > DDR :data			\
-	_end = .;							\
-}
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -93,13 +77,22 @@ endef
 
 define Packing/elf
 	$(INSTALL_DIR) $(BIN_DIR)
-	@echo "$(LD_SCRIPT)" > $(PKG_BUILD_DIR)/$(LD_SCRIPT_NAME)
-	$(OBJCOPY) -I binary -O $(ARCH) --change-addresses $(TEXT_BASE) --set-start $(TEXT_BASE) $(PKG_BUILD_DIR)/u-boot.bin $(PKG_BUILD_DIR)/u-boot.o
-	$(LD) $(PKG_BUILD_DIR)/u-boot.o -T $(PKG_BUILD_DIR)/$(LD_SCRIPT_NAME)  -o $(BIN_DIR)/openwrt-$(1)-$(SUBTARGET)-$(2)-u-boot.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-$(1)-$(SUBTARGET)-$(2)-u-boot-unstripped.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot $(BIN_DIR)/openwrt-$(1)-$(SUBTARGET)-$(2)-u-boot-stripped.elf
-	$(STRIP) $(BIN_DIR)/openwrt-$(1)-$(SUBTARGET)-$(2)-u-boot-stripped.elf
-	$(CP) $(PKG_BUILD_DIR)/u-boot.bin $(BIN_DIR)/openwrt-$(1)-$(SUBTARGET)-$(2)-u-boot.img
+	if ! bash $(CURDIR)/pack_uboot_elf.sh \
+		"$(PKG_BUILD_DIR)" \
+		"$(BIN_DIR)" \
+		"$(1)" \
+		"$(SUBTARGET)" \
+		"$(2)" \
+		"$(TEXT_BASE)" \
+		"$(TEXT_SIZE)" \
+		"$(ARCH)" \
+		"$(OBJCOPY)" \
+		"$(LD)" \
+		"$(STRIP)" \
+		"$(CP)"; then \
+		echo "Error: U-Boot packing failed"; \
+		exit 1; \
+	fi
 endef
 
 

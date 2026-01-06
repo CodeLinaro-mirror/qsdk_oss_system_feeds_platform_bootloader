@@ -21,8 +21,9 @@ LOCAL_VARIANT=$(patsubst ipq9574_%,%,\
 	$(patsubst ipq5332_%,%,\
 	$(patsubst ipq5424_%,%,\
 	$(patsubst ipq5210_%,%,\
+	$(patsubst ipq9650_%,%,\
 	$(BUILD_VARIANT) \
-	))))
+	)))))
 TARGET_64BIT:=generic
 
 ifeq ($(CONFIG_USE_PRPLMESH_WHM),y)
@@ -303,6 +304,27 @@ define Package/uboot-2025-ipq5210
   $$(eval $$(call BuildPackage,uboot-2025-ipq5210-$(1)))
 endef
 
+define Package/uboot-2025-ipq9650/common
+  define Package/uboot-2025-ipq9650-$(1)
+    SECTION:=boot
+    CATEGORY:=Boot Loaders
+    DEPENDS:=@TARGET_ipq96xx
+    TITLE:=U-boot for IPQ9650 $(1)
+    URL:=http://www.denx.de/wiki/U-Boot
+    VARIANT:=ipq9650_$(1)
+  endef
+endef
+
+define Package/uboot-2025-ipq9650
+  $(call Package/uboot-2025-ipq9650/common,$(1),$(2))
+
+  define Package/uboot-2025-ipq9650-$(1)/install
+	$(call Packing/elf,ipq9650,$(LOCAL_VARIANT))
+  endef
+
+  $$(eval $$(call BuildPackage,uboot-2025-ipq9650-$(1)))
+endef
+
 $(eval $(call Package/uboot-2025-ipq5332,mmc))
 $(eval $(call Package/uboot-2025-ipq5332,mmc32))
 $(eval $(call Package/uboot-2025-ipq5332,nand))
@@ -381,3 +403,12 @@ $(eval $(call Package/uboot-2025-ipq5210,norplusnand32))
 $(eval $(call Package/uboot-2025-ipq5210,norplusmmc))
 $(eval $(call Package/uboot-2025-ipq5210,norplusmmc32))
 $(eval $(call Package/uboot-2025-ipq5210-spl))
+
+$(eval $(call Package/uboot-2025-ipq9650,mmc))
+$(eval $(call Package/uboot-2025-ipq9650,mmc32))
+$(eval $(call Package/uboot-2025-ipq9650,nand))
+$(eval $(call Package/uboot-2025-ipq9650,nand32))
+$(eval $(call Package/uboot-2025-ipq9650,norplusnand))
+$(eval $(call Package/uboot-2025-ipq9650,norplusnand32))
+$(eval $(call Package/uboot-2025-ipq9650,norplusmmc))
+$(eval $(call Package/uboot-2025-ipq9650,norplusmmc32))

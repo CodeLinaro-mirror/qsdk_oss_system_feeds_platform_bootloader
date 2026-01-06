@@ -34,6 +34,8 @@ endif
 $(shell cp -fpR -u $(BOOTLOADER_SRC) $(SRC_DIR))
 TEXT_BASE=$(shell grep "CONFIG_TEXT_BASE" $(SRC_DIR)/configs/$(CONFIG_NAME)_defconfig | cut -c 18-)
 TEXT_SIZE=$(shell grep "CONFIG_TEXT_SIZE" $(SRC_DIR)/configs/$(CONFIG_NAME)_defconfig | cut -c 18-)
+SPL_TEXT_BASE=$(shell grep "CONFIG_SPL_TEXT_BASE" $(SRC_DIR)/configs/$(CONFIG_NAME)_defconfig | cut -c 22-)
+SPL_TEXT_SIZE=$(shell grep "CONFIG_SPL_TEXT_SIZE" $(SRC_DIR)/configs/$(CONFIG_NAME)_defconfig | cut -c 22-)
 
 VERSION_FILE := $(TOPDIR)/version
 ifneq ($(wildcard $(VERSION_FILE)),)
@@ -52,6 +54,22 @@ ifeq ($(SUBTARGET), generic)
 else
     ARCH:=elf32-littlearm
 endif
+
+SPL_LD_SCRIPT_NAME:=u-boot-$(SUBTARGET)-spl-custom.ld
+SPL_LD_SCRIPT:= 								\
+MEMORY {									\
+	SRAM (rxw) : ORIGIN = $(SPL_TEXT_BASE), LENGTH = $(SPL_TEXT_SIZE)	\
+}										\
+PHDRS {										\
+	ptype PT_LOAD FLAGS(5);  /* RX: Read and Execute */			\
+}										\
+ENTRY(_entry)									\
+SECTIONS {									\
+	. = $(SPL_TEXT_BASE);							\
+	_entry = . ;								\
+	.data : { *(.data) . = ALIGN(4);} > SRAM :ptype				\
+	_end = .;								\
+}
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -95,6 +113,16 @@ define Packing/elf
 	fi
 endef
 
+define Packing/spl_elf
+	$(INSTALL_DIR) $(BIN_DIR)
+	@echo "$(SPL_LD_SCRIPT)" > $(PKG_BUILD_DIR)/$(SPL_LD_SCRIPT_NAME)
+	$(OBJCOPY) -I binary -O $(ARCH) --change-addresses $(SPL_TEXT_BASE) --set-start $(SPL_TEXT_BASE) $(PKG_BUILD_DIR)/spl/u-boot-spl.bin $(PKG_BUILD_DIR)/spl/u-boot-spl.o
+	$(LD) $(PKG_BUILD_DIR)/spl/u-boot-spl.o -T $(PKG_BUILD_DIR)/$(SPL_LD_SCRIPT_NAME)  -o $(BIN_DIR)/u-boot-spl.elf
+	$(CP) $(PKG_BUILD_DIR)/spl/u-boot-spl $(BIN_DIR)/u-boot-spl-unstripped.elf
+	$(CP) $(PKG_BUILD_DIR)/spl/u-boot-spl $(BIN_DIR)/u-boot-spl-stripped.elf
+	$(STRIP) $(BIN_DIR)/u-boot-spl-stripped.elf
+	$(CP) $(PKG_BUILD_DIR)/spl/u-boot-spl.bin $(BIN_DIR)/u-boot-spl.img
+endef
 
 define Build/Configure
 	$(call Build/Configure/$(DEBUG_NAME))
@@ -255,6 +283,16 @@ define Package/uboot-2025-ipq5210/common
   endef
 endef
 
+define Package/uboot-2025-ipq5210-spl
+  $(call Package/uboot-2025-ipq5210/common,spl)
+
+  define Package/uboot-2025-ipq5210-spl/install
+       $(call Packing/spl_elf,ipq5210,$(LOCAL_VARIANT))
+  endef
+
+  $$(eval $$(call BuildPackage,uboot-2025-ipq5210-spl))
+endef
+
 define Package/uboot-2025-ipq5210
   $(call Package/uboot-2025-ipq5210/common,$(1),$(2))
 
@@ -342,3 +380,4 @@ $(eval $(call Package/uboot-2025-ipq5210,norplusnand))
 $(eval $(call Package/uboot-2025-ipq5210,norplusnand32))
 $(eval $(call Package/uboot-2025-ipq5210,norplusmmc))
 $(eval $(call Package/uboot-2025-ipq5210,norplusmmc32))
+$(eval $(call Package/uboot-2025-ipq5210-spl))

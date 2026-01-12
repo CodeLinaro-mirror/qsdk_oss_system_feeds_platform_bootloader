@@ -161,19 +161,14 @@ process_individual_dtbs() {
 			-T "${LD_SCRIPT_PATH}" \
 			-o "${BIN_DIR}/openwrt-${PLATFORM}-${SUBTARGET}-${VARIANT}-u-boot-${dtb_name_stripped}.elf"
 
-		${CP} "${PKG_BUILD_DIR}/u-boot" \
-			"${BIN_DIR}/openwrt-${PLATFORM}-${SUBTARGET}-${VARIANT}-u-boot-${dtb_name_stripped}-unstripped.elf"
-
-		${CP} "${PKG_BUILD_DIR}/u-boot" \
-			"${BIN_DIR}/openwrt-${PLATFORM}-${SUBTARGET}-${VARIANT}-u-boot-${dtb_name_stripped}-stripped.elf"
-		${STRIP} "${BIN_DIR}/openwrt-${PLATFORM}-${SUBTARGET}-${VARIANT}-u-boot-${dtb_name_stripped}-stripped.elf"
-
-		${CP} "${PKG_BUILD_DIR}/u-boot-${dtb_name}.bin" \
-			"${BIN_DIR}/openwrt-${PLATFORM}-${SUBTARGET}-${VARIANT}-u-boot-${dtb_name_stripped}.img"
-
 		echo "Created: openwrt-${PLATFORM}-${SUBTARGET}-${VARIANT}-u-boot-${dtb_name_stripped}.elf"
-
 	done
+
+	${CP} "${PKG_BUILD_DIR}/u-boot" \
+		"${BIN_DIR}/openwrt-${PLATFORM}-${SUBTARGET}-${VARIANT}-u-boot-unstripped.elf"
+
+	${CP} "${PKG_BUILD_DIR}/u-boot-${dtb_name}.bin" \
+		"${BIN_DIR}/openwrt-${PLATFORM}-${SUBTARGET}-${VARIANT}-u-boot.img"
 }
 
 echo "=== U-Boot ELF Packing Script ==="

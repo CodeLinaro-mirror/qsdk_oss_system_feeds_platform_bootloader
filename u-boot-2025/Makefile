@@ -402,6 +402,8 @@ $(eval $(call Package/uboot-2025-ipq5210,norplusnand))
 $(eval $(call Package/uboot-2025-ipq5210,norplusnand32))
 $(eval $(call Package/uboot-2025-ipq5210,norplusmmc))
 $(eval $(call Package/uboot-2025-ipq5210,norplusmmc32))
+$(eval $(call Package/uboot-2025-ipq5210,tiny_nand32))
+$(eval $(call Package/uboot-2025-ipq5210,tiny_norplusnand32))
 $(eval $(call Package/uboot-2025-ipq5210-spl))
 
 $(eval $(call Package/uboot-2025-ipq9650,mmc))

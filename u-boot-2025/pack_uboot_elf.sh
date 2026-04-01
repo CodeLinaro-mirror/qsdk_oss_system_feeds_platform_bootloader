@@ -47,7 +47,7 @@ ENTRY(_entry)
 SECTIONS {
 	. = ${TEXT_BASE};
 	_entry = . ;
-	.data : { *(.data) . = ALIGN(4);} > DDR :data
+	.data : { *(.data) . = ALIGN(64);} > DDR :data
 	_end = .;
 }
 EOF

@@ -128,14 +128,17 @@ endef
 define Build/Configure
 	$(call Build/Configure/$(DEBUG_NAME))
 	$(call Update/version)
-	$(MAKE) -C $(PKG_BUILD_DIR) $(CONFIG_NAME)_defconfig CROSS_COMPILE=$(TARGET_CROSS) TARGETCC=$(TARGET_CC);
+	$(MAKE) -C $(PKG_BUILD_DIR) $(CONFIG_NAME)_defconfig CROSS_COMPILE=$(TARGET_CROSS) \
+		CC="$(TARGET_CC)" HOSTCC="$(HOSTCC)" HOSTCXX="$(HOSTCXX)";
 endef
 
 define Build/Compile
 	VERSION_CODE='$(VERSION_NICK) $(VERSION_NUMBER)' \
 	REVISION='$(REVISION)' \
 	KBUILD_VERBOSE=1 $(MAKE) -C $(PKG_BUILD_DIR) HOSTSTRIP=true CROSS_COMPILE=$(TARGET_CROSS) \
-		TARGETCC=$(TARGET_CC) \
+		CC="$(TARGET_CC)" \
+		HOSTCC="$(HOSTCC)" \
+		HOSTCXX="$(HOSTCXX)" \
 		KCPPFLAGS="$(KCPPFLAGS)" \
 		KCFLAGS=-Werror \
 		HOSTLDFLAGS="$(HOST_LDFLAGS) -pthread -Werror" \
